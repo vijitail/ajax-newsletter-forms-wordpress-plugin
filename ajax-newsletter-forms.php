@@ -25,20 +25,35 @@ if(!defined('ABSPATH')) {
 
 class AjaxNewsletterForms 
 {
-    function __constructor() {
-
+    function __construct() {
+        add_action( 'init', array($this, 'createDB') );
     }
 
     function activate() {
-
+        $this->createDB();
+        flush_rewrite_rules();
     }
 
     function deactivate() {
-
+        flush_rewrite_rules();
     }
 
-    function uninstall() {
+    function createDB() {
+        global $wpdb;
 
+        $table_name = $wpdb->prefix.'ajax_newsletter_forms';
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $sql = "CREATE TABLE $table_name (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            name tinytext NOT NULL,
+            shortcode text NOT NULL,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+    
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
     }
 }
 
