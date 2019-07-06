@@ -23,6 +23,8 @@ if(!defined('ABSPATH')) {
     exit;
 }
 
+include 'inc/DBUpdate.php';
+
 if(!class_exists('AjaxNewsletterForms')) {
 
     class AjaxNewsletterForms 
@@ -30,59 +32,28 @@ if(!class_exists('AjaxNewsletterForms')) {
         public $plugin_name;
 
         function __construct() {
-
             $this->plugin_name = plugin_basename( __FILE__ );
-
-            add_action( 'init', array($this, 'createDB') );
+            $this->db_update = new DBUpdate();
         }
 
         function register() {
-            add_action( 'admin_menu', array($this, 'add_admin_menu') );
-
-            add_filter( "plugin_action_links_$this->plugin_name", array($this, 'settings_link') );
-        }
-
-        function add_admin_menu() {
-            add_menu_page( 'Ajax Newsletter Form', 'Ajax NF', 'manage_options', 'ajax_newsletter_forms', array($this, 'admin_index'), 'dashicons-feedback', 5 );
-        }
-
-        function settings_link($links) {
-            $settings_link = '<a href="admin.php?page=ajax_newsletter_forms">Settings</a>';
-            array_push($links, $settings_link);
-            return $links;
-        }
-
-        function admin_index() {
-            require_once plugin_dir_path( __FILE__ ).'/templates/admin.php';
-            
+            require_once plugin_dir_path( __FILE__ ).'/inc/AdminController.php';
+            if(class_exists('AdminController')) {
+                $admin_controller = new AdminController();
+                $admin_controller->register($this->plugin_name);
+            }
         }
 
         function activate() {
-            $this->createDB();
+            $this->db_update->create_ANF_Table();
             flush_rewrite_rules();
         }
 
         function deactivate() {
+            $this->db_update->delete_ANF_Table();
             flush_rewrite_rules();
         }
-
-        function createDB() {
-            global $wpdb;
-
-            $table_name = $wpdb->prefix.'ajax_newsletter_forms';
-
-            $charset_collate = $wpdb->get_charset_collate();
-
-            $sql = "CREATE TABLE $table_name (
-                id mediumint(9) NOT NULL AUTO_INCREMENT,
-                name tinytext NOT NULL,
-                shortcode text NOT NULL,
-                PRIMARY KEY  (id)
-            ) $charset_collate;";
         
-            require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-            dbDelta( $sql );
-        }
     }
 
     if(class_exists('AjaxNewsletterForms')) {

@@ -1,0 +1,22 @@
+
+.option input[type="text"], .option textarea, .option input[type="number"] {
+    width: 100%;
+    font-size: 20px;
+}
+
+.option textarea.code-editor ~ .CodeMirror {
+    margin-top: 10px !important;
+}
+
+.option {
+    margin-bottom: 20px;
+}
+
+.option:first-child {
+    margin-top: 10px;
+}
+
+.option label {
+    font-size: 16px;
+    margin-right: 10px;
+}
