@@ -2,7 +2,7 @@
     <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
     <hr>
     <form method="post" action="<?php echo esc_html( admin_url('admin-post.php') ); ?>">
-
+        <input type="hidden" name="action" value="save_anf">
         <div class="option">
             <input type="text" placeholder="Form Name" name="formName">
         </div>

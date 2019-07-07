@@ -6,7 +6,8 @@
 
 include ABSPATH . 'wp-admin/includes/upgrade.php';
 
-class DBUpdate {
+class DBUpdate 
+{
 
     function __construct() {
         global $wpdb;
@@ -29,8 +30,16 @@ class DBUpdate {
     }
 
     function delete_ANF_table() {
-
         $this->db->query("DROP TABLE IF EXISTS $this->table_name;");
-    
+    }
+
+    function store_ANF($value) {
+        $this->db->insert(
+            $this->table_name,
+            array(
+                'name' => $value,
+                'shortcode' => "[anf name='$value']",
+            )
+        );
     }
 }

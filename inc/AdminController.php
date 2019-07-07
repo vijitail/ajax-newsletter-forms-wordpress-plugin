@@ -4,9 +4,12 @@
  * @package ANFPlugin
 */
 
+include 'Serializer.php';
+
 if(!class_exists('AdminController')) {
 
-    class AdminController {
+    class AdminController 
+    {
         function register($plugin_name) {
 
             add_action( 'admin_menu', function() {
@@ -20,6 +23,9 @@ if(!class_exists('AdminController')) {
             add_action( 'admin_enqueue_scripts', function($hook) {
                 $this->add_admin_assets($hook);
             } );
+
+            $serializer = new Serializer();
+
         }
 
         private function add_admin_menu() {
