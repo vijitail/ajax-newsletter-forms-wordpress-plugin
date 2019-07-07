@@ -20,3 +20,7 @@
     font-size: 16px;
     margin-right: 10px;
 }
+
+.wp-list-table .column-id {
+    width: 50px !important;
+}

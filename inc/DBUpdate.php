@@ -33,7 +33,7 @@ class DBUpdate
         $this->db->query("DROP TABLE IF EXISTS $this->table_name;");
     }
 
-    function store_ANF($value) {
+    function store_anf($value) {
         return $this->db->insert(
             $this->table_name,
             array(
@@ -41,5 +41,24 @@ class DBUpdate
                 'shortcode' => "[anf name='$value']",
             )
         );
+    }
+
+    function get_anfs() {
+        return $this->db->get_results( $this->db->get_results( 
+            $this->db->prepare(" SELECT * FROM $this->table_name; ")
+         ) );
+    }
+
+    function delete_anf($id) {
+        return $this->db->delete($this->table_name, array('id' => $id));
+    }
+
+    function update_anf($id, $value) {
+        return $this->db->update($this->table_name, 
+            array( 
+                'name' => $value,
+                'shortcode' => "[anf name='$value']",
+            ),
+            array('id' => $id));
     }
 }

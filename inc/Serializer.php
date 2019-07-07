@@ -18,6 +18,8 @@ if(!class_exists('Serializer')) {
             add_action( 'admin_post_nopriv_save_anf', array( $this, 'save_anf' ) );
             add_action( 'admin_post_save_anf', array( $this, 'save_anf') );
 
+            add_action( 'admin_post_nopriv_edit_anf', array( $this, 'edit_anf' ) );
+            add_action( 'admin_post_edit_anf', array( $this, 'edit_anf') );
         }
 
         public function save_anf() {
@@ -29,11 +31,29 @@ if(!class_exists('Serializer')) {
 
             if ( null != wp_unslash( $_POST['formName'] ) ) {
                 $value = sanitize_text_field( $_POST['formName'] );
-                if($this->db_update->store_ANF($value))
+                if($this->db_update->store_anf($value))
                    $success = "success"; 
             }
 
-            $this->redirect($success);
+            $this->redirect($success, "save");
+
+        }
+
+        public function edit_anf() {
+
+            if ( ! ( $this->has_valid_nonce() && current_user_can( 'manage_options' ) ) ) {
+                // TODO: Display an error message.
+                wp_die('Error');
+            }
+
+            if ( null != wp_unslash( $_POST['formName'] ) && null != wp_unslash( $_POST['formId'] ) ) {
+                $value = sanitize_text_field( $_POST['formName'] );
+                $id = sanitize_text_field( $_POST['formId'] );
+                if($this->db_update->update_anf($id, $value))
+                   $success = "success"; 
+            }
+
+            $this->redirect($success, "edit");
 
         }
 
@@ -50,15 +70,17 @@ if(!class_exists('Serializer')) {
      
         }
 
-        private function redirect($notice_type="") {
+        public function redirect($notice_type="", $action="") {
  
             if ( ! isset( $_POST['_wp_http_referer'] ) ) { 
                 $_POST['_wp_http_referer'] = wp_login_url();
             }
      
-            $url = sanitize_text_field(
-                    wp_unslash( $_POST['_wp_http_referer']."&updated=$notice_type" ) 
-            );
+            // $url = sanitize_text_field(
+            //         wp_unslash( $_POST['_wp_http_referer']."&updated=$notice_type" ) 
+            // );
+
+            $url = admin_url("/admin.php?page=ajax_newsletter_forms&updated=$notice_type&action=$action");
      
             wp_safe_redirect( urldecode( $url ) );
             exit;

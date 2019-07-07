@@ -55,6 +55,16 @@ if(!class_exists('AdminController')) {
                     $this->admin_new_ajax_form(); 
                 }
             );
+            add_submenu_page( 
+                '', 
+                'Edit Ajax Form', 
+                '', 
+                'manage_options', 
+                'edit_ajax_newsletter_form', 
+                function() {
+                    $this->admin_edit_ajax_form(); 
+                }
+            );
         }
 
         private function add_settings_link($links) {
@@ -72,8 +82,12 @@ if(!class_exists('AdminController')) {
             require_once plugin_dir_path( __FILE__ ).'../templates/create-form.php';
         }
 
+        private function admin_edit_ajax_form() {
+            require_once plugin_dir_path( __FILE__ ).'../templates/edit-form.php';
+        }
+
         private function add_admin_assets($hook) {
-            if($hook != "ajax-nf_page_new_ajax_newsletter_form") {
+            if(!strpos($hook, 'ajax_newsletter')) {
                 return;
             }
             $cm_settings['codeEditor'] = wp_enqueue_code_editor(array('type' => 'text/javascript'));
