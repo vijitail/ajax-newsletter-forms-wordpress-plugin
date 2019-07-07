@@ -34,7 +34,7 @@ class DBUpdate
     }
 
     function store_ANF($value) {
-        $this->db->insert(
+        return $this->db->insert(
             $this->table_name,
             array(
                 'name' => $value,
