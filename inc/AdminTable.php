@@ -104,11 +104,14 @@ if(!class_exists('AdminTable')) {
         {
             switch( $column_name ) {
                 case 'cb':
-                    return $column_name;
-                    break;
+                    // return $column_name;
+                    // break;
                 case 'id':
+                    return $item[$column_name] ;
                 case 'name':
+                    break;
                 case 'shortcode':
+                    return '[anf id="'.$item['id'].'"]';
                 default:
                     return $item[$column_name] ;
             }

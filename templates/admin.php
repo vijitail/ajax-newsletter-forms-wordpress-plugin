@@ -1,6 +1,6 @@
 
 <div class="wrap">
-<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+<h1><?php echo esc_html( get_admin_page_title() ); ?> <a href="<?php get_admin_url('/admin.php?page=new_ajax_newsletter_form') ?>" class="page-title-action">Add New Form</a> </h1>
 <h2></h2>
 
 <?php 

@@ -22,7 +22,10 @@ class DBUpdate
         $sql = "CREATE TABLE $this->table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             name tinytext NOT NULL,
-            shortcode text NOT NULL,
+            has_name_field tinyint(1) DEFAULT 0,
+            list_num int(2) NOT NULL,
+            onsuccess_jquery text,
+            onerror_jquery text,
             PRIMARY KEY  (id)
         ) $charset_collate;";
     
@@ -33,13 +36,10 @@ class DBUpdate
         $this->db->query("DROP TABLE IF EXISTS $this->table_name;");
     }
 
-    function store_anf($value) {
+    function store_anf($values) {
         return $this->db->insert(
             $this->table_name,
-            array(
-                'name' => $value,
-                'shortcode' => "[anf name='$value']",
-            )
+            $values
         );
     }
 
@@ -53,12 +53,9 @@ class DBUpdate
         return $this->db->delete($this->table_name, array('id' => $id));
     }
 
-    function update_anf($id, $value) {
+    function update_anf($id, $values) {
         return $this->db->update($this->table_name, 
-            array( 
-                'name' => $value,
-                'shortcode' => "[anf name='$value']",
-            ),
+            $values,
             array('id' => $id));
     }
 }

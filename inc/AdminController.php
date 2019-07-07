@@ -41,7 +41,7 @@ if(!class_exists('AdminController')) {
             );
             add_submenu_page( 
                 'ajax_newsletter_forms', 
-                'All Forms', 
+                'All Ajax Newsletter Forms', 
                 'All Forms', 
                 'manage_options', 
                 'ajax_newsletter_forms');

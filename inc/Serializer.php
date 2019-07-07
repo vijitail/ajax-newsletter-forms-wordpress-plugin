@@ -26,12 +26,18 @@ if(!class_exists('Serializer')) {
 
             if ( ! ( $this->has_valid_nonce() && current_user_can( 'manage_options' ) ) ) {
                 // TODO: Display an error message.
-                echo "Error";
+                wp_die("Error");
             }
 
-            if ( null != wp_unslash( $_POST['formName'] ) ) {
-                $value = sanitize_text_field( $_POST['formName'] );
-                if($this->db_update->store_anf($value))
+            if ( null != wp_unslash( $_POST['formName'] && null != wp_unslash( $_POST['listNumber'] )) ) {
+                $values = array(
+                    'name' => sanitize_text_field($_POST['formName']),
+                    'list_num' => sanitize_text_field($_POST['listNumber']),
+                    'has_name_field' => isset($_POST['hasName']) && $_POST['hasName'] == 'on',
+                    'onsuccess_jquery' => isset($_POST['onsuccessJQuery']) ? htmlspecialchars($_POST['onsuccessJQuery']) : '',
+                    'onerror_jquery' => isset($_POST['onerrorJQuery']) ? htmlspecialchars($_POST['onerrorJQuery']) : '',
+                );
+                if($this->db_update->store_anf($values))
                    $success = "success"; 
             }
 
@@ -47,9 +53,15 @@ if(!class_exists('Serializer')) {
             }
 
             if ( null != wp_unslash( $_POST['formName'] ) && null != wp_unslash( $_POST['formId'] ) ) {
-                $value = sanitize_text_field( $_POST['formName'] );
+                $values = array(
+                    'name' => sanitize_text_field($_POST['formName']),
+                    'list_num' => sanitize_text_field($_POST['listNumber']),
+                    'has_name_field' => isset($_POST['hasName']) && $_POST['hasName'] == 'on',
+                    'onsuccess_jquery' => isset($_POST['onsuccessJQuery']) ? htmlspecialchars($_POST['onsuccessJQuery']) : '',
+                    'onerror_jquery' => isset($_POST['onerrorJQuery']) ? htmlspecialchars($_POST['onerrorJQuery']) : '',
+                );
                 $id = sanitize_text_field( $_POST['formId'] );
-                if($this->db_update->update_anf($id, $value))
+                if($this->db_update->update_anf($id, $values))
                    $success = "success"; 
             }
 
