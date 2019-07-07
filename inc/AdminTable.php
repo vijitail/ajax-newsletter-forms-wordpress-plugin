@@ -63,7 +63,7 @@ if(!class_exists('AdminTable')) {
         function column_name($item) {
             $actions = array(
                 'edit' => sprintf('<a href="?page=%s&action=%s& form=%s">Edit</a>','edit_ajax_newsletter_form','edit',$item['id']),
-                'delete' => sprintf('<a href="?page=%s&action=%s&form=%s">Delete</a>','edit_ajax_newsletter_form','delete',$item['id']),
+                'delete' => sprintf('<a href="?page=%s&action=%s&form=%s">Delete</a>','ajax_newsletter_forms','delete',$item['id']),
             );
             return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions) );
         }

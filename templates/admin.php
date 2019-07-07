@@ -4,6 +4,11 @@
 <h2></h2>
 
 <?php 
+    if(null !== $_GET['action'] && $_GET['action'] == 'delete' && null !== $_GET['form']) {
+        $db_update = new DBUpdate();
+        $id = $_GET['form'];
+        $db_update->delete_anf($id);
+    }
 
     require_once plugin_dir_path( __FILE__ ).'/../inc/AdminTable.php';
 
