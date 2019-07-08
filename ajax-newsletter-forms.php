@@ -42,6 +42,11 @@ if(!class_exists('AjaxNewsletterForms')) {
                 $admin_controller = new AdminController();
                 $admin_controller->register($this->plugin_name);
             }
+            require_once plugin_dir_path( __FILE__ ).'/inc/FrontendController.php';
+            if(class_exists('FrontendController')) {
+                $frontend_controller = new FrontendController();
+                $frontend_controller->register();
+            }
         }
 
         function activate() {
