@@ -34,22 +34,55 @@ if(!class_exists('FrontendController')) {
             $opts = get_option('newsletter');
             // print_r($opts);
             // wp_die();
+
             $results = $this->db->get_row( 
                 $this->db->prepare("SELECT * FROM wp_ajax_newsletter_forms WHERE id=%s", $id)
             );
             $data = (array)$results;
+
             ?>
-            <form class="anf" role="form" method="post">
+            <form class="anf" role="form" method="post" data-id="anf_form_<?php echo $data['id']; ?>">
+                <input type="hidden" name="anf_list_num" value="<?php echo $data['list_num'];?>">
                 <input type="hidden" name="anf_hr" value="<?php echo get_bloginfo( 'url' ) ?>">
-                <input type="email" name="anf_email" class="anf-input" placeholder="E-mail address">
+                <?php 
+                    if($data['has_name_field'] == '1') {
+
+                ?>
+                <div class="anf-input-group">
+                <input type="text" name="anf_name" class="anf-input" placeholder="Name" required>
+                </div>
+                <?php
+                    }
+                ?>
+                <div class="anf-input-group">
+                <input type="email" name="anf_email" class="anf-input" placeholder="E-mail address" required>
+                </div>
                 <input value="Subscribe" type="submit" class="anf-submit">
             </form>
+            <script>
+                // (function($) {
+                    var anf_form_<?php echo $data['id']; ?> = {
+                        <?php if(null !== $data['onsuccess_jquery'] && $data['onsuccess_jquery'] != '') { ?>
+                        onsuccess: function($) {
+                            <?php echo stripcslashes($data['onsuccess_jquery']); ?>
+                        },  
+                        <?php } ?>
+                        <?php if(null !== $data['onerror_jquery'] && $data['onerror_jquery'] != '') { ?>
+                        onerror: function($) {
+                            <?php echo stripcslashes($data['onerror_jquery']); ?>
+                        },  
+                        <?php } ?>
+
+                    }
+                // })(jQuery)
+            </script>
             <?php
         }
 
         private function add_frontend_scripts() 
         {
             wp_enqueue_script('anf_script', plugins_url('../assets/frontend/script.js', __FILE__), array('jquery'));
+            wp_enqueue_style( 'anf_style', plugins_url('../assets/frontend/style.css', __FILE__));
             if(!is_admin()) {
                 wp_localize_script( 'anf_script', 'anf', array(
                     'url' => admin_url('admin-ajax.php'),
@@ -79,11 +112,11 @@ if(!class_exists('FrontendController')) {
                 // check if already exists
                 
                 /** @var int $count **/
-                $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}newsletter WHERE email = %s", $fields['ne'] ) );
+            $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}newsletter WHERE email = %s AND list_{$fields['anf_list_num']} = 1", $fields['anf_email'] ) );
                 
                 if( $count > 0 ) {
                     $output = array(
-                        'status'    => 'error',
+                        'status'    => 'success',
                         'msg'       => __( 'Already in a database.')
                     );
                 } elseif( !defined( 'NEWSLETTER_VERSION' ) ) {
@@ -104,19 +137,30 @@ if(!class_exists('FrontendController')) {
                         $status = 'S';
                     }
 
-                    /**
-                     * Generate token
-                     */
+                    $count_email = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}newsletter WHERE email = %s", $fields['anf_email'] ) );
                     
-                    /** @var string $token */
                     $token =  wp_generate_password( rand( 10, 50 ), false );
-                    $wpdb->insert( $wpdb->prefix . 'newsletter', array(
-                            'email'         => $fields['anf_email'],
-                            'status'        => $status,
-                            'http_referer'  => $fields['anf_hr'],
-                            'token'         => $token,
-                        )
-                    );
+                    
+                    if($count_email > 0) {
+                        $wpdb->update($wpdb->prefix . 'newsletter', array(
+                                "list_{$fields['anf_list_num']}"        => !!$fields['anf_list_num'],
+                            ), 
+                            array( 
+                                'email' => $fields['anf_email']
+                            )
+                        );
+                    } else {
+                        $wpdb->insert( $wpdb->prefix . 'newsletter', array(
+                                'email'         => $fields['anf_email'],
+                                'name'          => $fields['anf_name'] ? $fields['anf_name'] : '',
+                                'surname'       => $fields['anf_lname'] ? $fields['anf_lname'] : '',
+                                "list_{$fields['anf_list_num']}"        => !!$fields['anf_list_num'],
+                                'status'        => $status,
+                                'http_referer'  => $fields['anf_hr'],
+                                'token'         => $token,
+                            )
+                        );
+                    }
                     
                     $output = array(
                         'status'    => 'success',

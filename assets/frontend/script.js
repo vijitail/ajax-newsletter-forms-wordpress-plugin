@@ -12,12 +12,25 @@ jQuery(document).ready(function($){
             data: serializedData
         };
 
+        var objExists = typeof window[$(this).attr('data-id')] !== undefined;
+
+        var form_id = $(this).attr("data-id");
+
         $.ajax({
             method: "POST",
             url: anf.url,
             data: data,
             success: function(data) {
+                if(data.status == 'success') {
                 console.log(data);
+                if(objExists && window[form_id].hasOwnProperty('onsuccess')) {
+                    window[form_id].onsuccess($);
+                }
+                } else if(data.status == 'error') {
+                    if(objExists && window[form_id].hasOwnProperty('onsuccess')) {
+                        window[form_id].onerror($);
+                    }    
+                } 
             }
         });
 
