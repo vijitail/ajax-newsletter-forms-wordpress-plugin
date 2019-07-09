@@ -1,14 +1,11 @@
 # Ajax Newsletter Forms Plugin
 
-A plugin for building Ajax Forms for Newsletter, compatible with the Newsletter plugin.
+A plugin for building Ajax Forms for Newsletter, compatible with the Newsletter plugin. You can write custom jquery for onsuccess and onerror of the form submission. Currently only supports form submission to the Newsletter plugin.
 
-## List of features
+## Features to be added
 
-* Create Custom Forms
+* Form submission to other urls
 
-* Write custom CSS
+* HTML editor to build custom forms
 
-* Write jQuery for onsuccess and onerror on ajax form submission
-
-* Option to send ajax request to other url
-
+***Documentation for the plugin will be added soon***
