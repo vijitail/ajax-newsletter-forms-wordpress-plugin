@@ -31,9 +31,6 @@ if(!class_exists('FrontendController')) {
 
         private function display_form($id) 
         {
-            $opts = get_option('newsletter');
-            // print_r($opts);
-            // wp_die();
 
             $results = $this->db->get_row( 
                 $this->db->prepare("SELECT * FROM wp_ajax_newsletter_forms WHERE id=%s", $id)
@@ -59,6 +56,12 @@ if(!class_exists('FrontendController')) {
                 </div>
                 <input value="Subscribe" type="submit" class="anf-submit">
             </form>
+            <div class="success message-box">
+                Form submitted successfully
+            </div>
+            <div class="error message-box">
+                There ws an error
+            </div>
             <script>
                 // (function($) {
                     var anf_form_<?php echo $data['id']; ?> = {
@@ -131,9 +134,9 @@ if(!class_exists('FrontendController')) {
                     // This means that double opt in is enabled
                     // so we need to send activation e-mail
                     if ($opt_in == 0) {
-                        // $newsletter = Newsletter::instance();
-                        // $user = NewsletterUsers::instance()->get_user( $wpdb->insert_id );
-                        // NewsletterSubscription::instance()->mail($user->email, $newsletter->replace($opts['confirmation_subject'], $user), $newsletter->replace($opts['confirmation_message'], $user));
+                        $newsletter = Newsletter::instance();
+                        $user = NewsletterUsers::instance()->get_user( $wpdb->insert_id );
+                        NewsletterSubscription::instance()->mail($user->email, $newsletter->replace($opts['confirmation_subject'], $user), $newsletter->replace($opts['confirmation_message'], $user));
                         $status = 'S';
                     }
 

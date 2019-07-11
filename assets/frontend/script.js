@@ -23,13 +23,24 @@ jQuery(document).ready(function($){
             success: function(data) {
                 if(data.status == 'success') {
                 console.log(data);
-                if(objExists && window[form_id].hasOwnProperty('onsuccess')) {
-                    window[form_id].onsuccess($);
-                }
+                    if(objExists && window[form_id].hasOwnProperty('onsuccess')) {
+                        window[form_id].onsuccess($);
+                    } else {
+                        $('.success.message-box').addClass('display');
+                        setTimeout(function(){
+                            $('.success.message-box').removeClass('display');
+                        }, 1500)
+                    }
                 } else if(data.status == 'error') {
                     if(objExists && window[form_id].hasOwnProperty('onsuccess')) {
                         window[form_id].onerror($);
                     }    
+                    else {
+                        $('.error.message-box').addClass('display');
+                        setTimeout(function(){
+                            $('.error.message-box').removeClass('display');
+                        }, 1500)
+                    }
                 } 
             }
         });
