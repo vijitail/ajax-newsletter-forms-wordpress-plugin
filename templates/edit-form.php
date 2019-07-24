@@ -25,6 +25,9 @@ $form_data = (array) $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WH
             <label for="hasName">Add Name field in the newsletter form </label> <input type="checkbox" name="hasName" id="hasName" <?php echo $form_data['has_name_field'] == 1 ? "checked" : ''; ?>>
         </div>
         <div class="option">
+            <input type="text" placeholder="Ajax URL (optional)" name="ajaxUrl">            
+        </div>
+        <div class="option">
             <label>Custom jQuery for form success</label>
             <textarea class="code-editor" name="onsuccessJQuery"><?php echo stripcslashes($form_data['onsuccess_jquery']); ?></textarea>
         </div>

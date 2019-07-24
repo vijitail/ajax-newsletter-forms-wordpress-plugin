@@ -24,6 +24,7 @@ class DBUpdate
             name tinytext NOT NULL,
             has_name_field tinyint(1) DEFAULT 0,
             list_num int(2) NOT NULL,
+            ajax_url text,
             onsuccess_jquery text,
             onerror_jquery text,
             PRIMARY KEY  (id)

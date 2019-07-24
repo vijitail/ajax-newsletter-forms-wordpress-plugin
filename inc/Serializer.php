@@ -34,6 +34,7 @@ if(!class_exists('Serializer')) {
                     'name' => sanitize_text_field($_POST['formName']),
                     'list_num' => sanitize_text_field($_POST['listNumber']),
                     'has_name_field' => isset($_POST['hasName']) && $_POST['hasName'] == 'on',
+                    'ajax_url' => isset($_POST['ajaxUrl']) ? htmlspecialchars($_POST['ajaxUrl']) : '',
                     'onsuccess_jquery' => isset($_POST['onsuccessJQuery']) ? htmlspecialchars($_POST['onsuccessJQuery']) : '',
                     'onerror_jquery' => isset($_POST['onerrorJQuery']) ? htmlspecialchars($_POST['onerrorJQuery']) : '',
                 );
@@ -57,6 +58,7 @@ if(!class_exists('Serializer')) {
                     'name' => sanitize_text_field($_POST['formName']),
                     'list_num' => sanitize_text_field($_POST['listNumber']),
                     'has_name_field' => isset($_POST['hasName']) && $_POST['hasName'] == 'on',
+                    'ajax_url' => isset($_POST['ajaxUrl']) ? htmlspecialchars($_POST['ajaxUrl']) : '',
                     'onsuccess_jquery' => isset($_POST['onsuccessJQuery']) ? htmlspecialchars($_POST['onsuccessJQuery']) : '',
                     'onerror_jquery' => isset($_POST['onerrorJQuery']) ? htmlspecialchars($_POST['onerrorJQuery']) : '',
                 );

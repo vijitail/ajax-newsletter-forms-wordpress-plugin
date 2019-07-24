@@ -42,14 +42,14 @@ if(!class_exists('FrontendController')) {
                 <input type="hidden" name="anf_list_num" value="<?php echo $data['list_num'];?>">
                 <input type="hidden" name="anf_hr" value="<?php echo get_bloginfo( 'url' ) ?>">
                 <?php 
-                    if($data['has_name_field'] == '1') {
+                    if($data['has_name_field'] == '1'):
 
                 ?>
                 <div class="anf-input-group">
                 <input type="text" name="anf_name" class="anf-input" placeholder="Name" required>
                 </div>
                 <?php
-                    }
+                    endif;
                 ?>
                 <div class="anf-input-group">
                 <input type="email" name="anf_email" class="anf-input" placeholder="E-mail address" required>
@@ -63,21 +63,22 @@ if(!class_exists('FrontendController')) {
                 There ws an error
             </div>
             <script>
-                // (function($) {
-                    var anf_form_<?php echo $data['id']; ?> = {
-                        <?php if(null !== $data['onsuccess_jquery'] && $data['onsuccess_jquery'] != '') { ?>
-                        onsuccess: function($) {
-                            <?php echo stripcslashes($data['onsuccess_jquery']); ?>
-                        },  
-                        <?php } ?>
-                        <?php if(null !== $data['onerror_jquery'] && $data['onerror_jquery'] != '') { ?>
-                        onerror: function($) {
-                            <?php echo stripcslashes($data['onerror_jquery']); ?>
-                        },  
-                        <?php } ?>
+                var anf_form_<?php echo $data['id']; ?> = {
+                    <?php if(null !== $data['onsuccess_jquery'] && $data['onsuccess_jquery'] != ''): ?>
+                    onsuccess: function($) {
+                        <?php echo stripcslashes($data['onsuccess_jquery']); ?>
+                    },  
+                    <?php endif; ?>
+                    <?php if(null !== $data['onerror_jquery'] && $data['onerror_jquery'] != ''): ?>
+                    onerror: function($) {
+                        <?php echo stripcslashes($data['onerror_jquery']); ?>
+                    },  
+                    <?php endif; ?>
+                    <?php if(null !== $data['ajax_url'] && $data['ajax_url'] != ''): ?>
+                    ajax_url: "<?php echo stripcslashes($data['ajax_url']); ?>",  
+                    <?php endif; ?>
 
-                    }
-                // })(jQuery)
+                }
             </script>
             <?php
         }
@@ -110,12 +111,8 @@ if(!class_exists('FrontendController')) {
             }
 
             if ( !empty( $fields ) ) :
-                global $wpdb;
-                
-                // check if already exists
-                
-                /** @var int $count **/
-            $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}newsletter WHERE email = %s AND list_{$fields['anf_list_num']} = 1", $fields['anf_email'] ) );
+ 
+            $count = $this->db->get_var( $this->db->prepare("SELECT COUNT(*) FROM {$this->db->prefix}newsletter WHERE email = %s AND list_{$fields['anf_list_num']} = 1", $fields['anf_email'] ) );
                 
                 if( $count > 0 ) {
                     $output = array(
@@ -131,21 +128,19 @@ if(!class_exists('FrontendController')) {
                     $status = 'C';
                     $opts = get_option('newsletter');
                     $opt_in = (int) $opts['noconfirmation'];
-                    // This means that double opt in is enabled
-                    // so we need to send activation e-mail
                     if ($opt_in == 0) {
                         $newsletter = Newsletter::instance();
-                        $user = NewsletterUsers::instance()->get_user( $wpdb->insert_id );
+                        $user = NewsletterUsers::instance()->get_user( $this->db->insert_id );
                         NewsletterSubscription::instance()->mail($user->email, $newsletter->replace($opts['confirmation_subject'], $user), $newsletter->replace($opts['confirmation_message'], $user));
                         $status = 'S';
                     }
 
-                    $count_email = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}newsletter WHERE email = %s", $fields['anf_email'] ) );
+                    $count_email = $this->db->get_var( $this->db->prepare("SELECT COUNT(*) FROM {$this->db->prefix}newsletter WHERE email = %s", $fields['anf_email'] ) );
                     
                     $token =  wp_generate_password( rand( 10, 50 ), false );
                     
                     if($count_email > 0) {
-                        $wpdb->update($wpdb->prefix . 'newsletter', array(
+                        $this->db->update($this->db->prefix . 'newsletter', array(
                                 "list_{$fields['anf_list_num']}"        => !!$fields['anf_list_num'],
                             ), 
                             array( 
@@ -153,7 +148,7 @@ if(!class_exists('FrontendController')) {
                             )
                         );
                     } else {
-                        $wpdb->insert( $wpdb->prefix . 'newsletter', array(
+                        $this->db->insert( $this->db->prefix . 'newsletter', array(
                                 'email'         => $fields['anf_email'],
                                 'name'          => $fields['anf_name'] ? $fields['anf_name'] : '',
                                 'surname'       => $fields['anf_lname'] ? $fields['anf_lname'] : '',

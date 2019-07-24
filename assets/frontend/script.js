@@ -4,7 +4,6 @@ jQuery(document).ready(function($){
         
         var serializedData = $(this).serialize();
         e.preventDefault();
-        console.log(serializedData);
 
         var data = {
             action: 'anf_submit',
@@ -16,9 +15,13 @@ jQuery(document).ready(function($){
 
         var form_id = $(this).attr("data-id");
 
+        if(objExists && window[form_id].hasOwnProperty('ajax_url')) {
+            var ajax_url = window[form_id].ajax_url;
+        }
+
         $.ajax({
             method: "POST",
-            url: anf.url,
+            url: ajax_url || anf.url,
             data: data,
             success: function(data) {
                 if(data.status == 'success') {

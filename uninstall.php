@@ -11,4 +11,6 @@ if(!defined('WP_UNINSTALL_PLUGIN')) {
 }
 
 
+global $wpdb;
 
+$wpdb->query("DROP TABLE IF EXISTS $this->table_name;");
